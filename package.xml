@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>task_behavior_engine</name>
+  <version>0.0.0</version>
+  <description>The task_behavior_engine package</description>
+
+  <maintainer email="allison.thackston@tri.global">Allison Thackston</maintainer>
+
+  <license>Apache 2.0</license>
+
+  <author email="allison.thackston@tri.global">Allison Thackston</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+    <architecture_independent/>
+  </export>
+</package>
