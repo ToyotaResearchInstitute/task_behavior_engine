@@ -20,7 +20,7 @@ node {
 
                 slackSend color: 'warning', message: "build $buildLink started"
                 stage('checkout') {
-                    withEnv(["PATH+WSTOOL=${tool 'catkin'}/bin"]) {
+                    withEnv(["PATH+WSTOOL=${tool 'wstool'}/bin"]) {
                         sh """
                            echo "making workspace"
                            mkdir catkin_ws
