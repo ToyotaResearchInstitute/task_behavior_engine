@@ -41,7 +41,6 @@ node {
                         sh """
                           . /opt/ros/indigo/setup.sh
                           printenv
-                          cd ../
                           catkin_make install
                            """
 
