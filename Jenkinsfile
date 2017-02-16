@@ -22,7 +22,7 @@ node {
                 stage('checkout') {
                     withEnv(["PATH+WSTOOL=${tool 'wstool'}/bin"]) {
                         sh """
-                           echo "making workspace"
+                           rm -fr catkin_ws
                            mkdir catkin_ws
                            cd catkin_ws
                            wstool init src
