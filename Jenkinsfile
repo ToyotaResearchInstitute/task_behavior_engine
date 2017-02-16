@@ -38,6 +38,7 @@ node {
                 stage('build') {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                         sh """
+                          printenv
                           catkin_make install
                            """
 
