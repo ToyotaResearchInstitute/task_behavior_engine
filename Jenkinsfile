@@ -29,19 +29,22 @@ node {
                         dir('catkin_ws/src/task_behavior_engine') {
                             checkout scm
                         }
-                        sh """
-                           pwd
-                           ls -la
-                           """
                     }
                 }
-
+                stage('test') {
+                    withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
+                       sh """
+                          . /opt/ros/indigo/setup.sh
+                          cd catkin_ws
+                          catkin_make test
+                          """
+                    }
+                }
                 stage('build') {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                         sh """
                           . /opt/ros/indigo/setup.sh
                           cd catkin_ws
-                          ls -la
                           catkin_make install
                            """
 
