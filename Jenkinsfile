@@ -29,6 +29,10 @@ node {
                            cd src
                            """
                         checkout scm
+                        sh """
+                           pwd
+                           ls -la
+                           """
                     }
                 }
 
