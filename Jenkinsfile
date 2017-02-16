@@ -38,6 +38,7 @@ node {
                 stage('build') {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                         sh """
+                          . /opt/ros/indigo/setup.sh
                           printenv
                           catkin_make install
                            """
