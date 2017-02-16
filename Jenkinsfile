@@ -24,11 +24,11 @@ node {
                         sh """
                            rm -fr catkin_ws
                            mkdir catkin_ws
-                           cd catkin_ws
-                           wstool init src
-                           cd src
+                           wstool init catkin_ws/src
                            """
-                        checkout scm
+                        dir(catkin_ws/src) {
+                            checkout scm
+                        }
                         sh """
                            pwd
                            ls -la
