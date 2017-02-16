@@ -8,8 +8,8 @@ def dockerTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}".toLowerCase().replaceAl
 def buildLink = "<${env.BUILD_URL}|${env.JOB_NAME} ${env.BUILD_NUMBER}>"
 
 node {
-    timestamps {
-        ansiColor('xterm') {
+//    timestamps {
+ //       ansiColor('xterm') {
             try {
                 properties properties: [
                         [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '50']],
@@ -35,6 +35,6 @@ node {
                 slackSend color: 'danger', message: "build $buildLink failed"
                 error "error building, ${e.getMessage()}"
             }
-        }
-    }
+//        }
+//    }
 }
