@@ -28,6 +28,7 @@ node {
                         sh """
                           echo "build here"
                           ls -lh
+                          pwd
                            """
 
                         slackSend color: 'good', message: "stage 'gradle build' of build $buildLink passed"
