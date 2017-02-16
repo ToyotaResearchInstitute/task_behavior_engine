@@ -29,15 +29,16 @@ node {
                            cd src
                            """
                         checkout scm
+                        sh """
+                           cd ../
+                           """
                     }
                 }
 
                 stage('build') {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                         sh """
-                          echo "build here"
-                          ls -lh
-                          pwd
+                          catkin_make install
                            """
 
                         slackSend color: 'good', message: "stage 'gradle build' of build $buildLink passed"
