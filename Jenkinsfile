@@ -26,7 +26,7 @@ node {
                            mkdir catkin_ws
                            wstool init catkin_ws/src
                            """
-                        dir(catkin_ws/src) {
+                        dir('catkin_ws/src') {
                             checkout scm
                         }
                         sh """
