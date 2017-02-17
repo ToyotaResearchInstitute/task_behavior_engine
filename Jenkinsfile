@@ -44,7 +44,7 @@ node {
                 stage('test') {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                        sh """
-                          . catkin_ws/devel/setup.sh
+                          . catkin_ws/install/setup.sh
                           catkin_make test -t catkin_ws
                           """
                     }
