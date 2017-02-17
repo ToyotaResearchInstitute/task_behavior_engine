@@ -35,7 +35,7 @@ node {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                         sh """
                           . /opt/ros/indigo/setup.sh
-                          catkin_make install -t catkin_ws
+                          catkin_make install -C catkin_ws
                            """
 
                         slackSend color: 'good', message: "stage 'gradle build' of build $buildLink passed"
@@ -45,7 +45,7 @@ node {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                        sh """
                           . catkin_ws/install/setup.sh
-                          catkin_make test -t catkin_ws
+                          catkin_make test -C catkin_ws
                           """
                     }
                 }
