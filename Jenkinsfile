@@ -31,24 +31,22 @@ node {
                         }
                     }
                 }
-                stage('test') {
-                    withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
-                       sh """
-                          . /opt/ros/indigo/setup.sh
-                          cd catkin_ws
-                          catkin_make test
-                          """
-                    }
-                }
                 stage('build') {
                     withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
                         sh """
                           . /opt/ros/indigo/setup.sh
-                          cd catkin_ws
-                          catkin_make install
+                          catkin_make install -t catkin_ws
                            """
 
                         slackSend color: 'good', message: "stage 'gradle build' of build $buildLink passed"
+                    }
+                }
+                stage('test') {
+                    withEnv(["PATH+CATKIN=${tool 'catkin'}/bin"]) {
+                       sh """
+                          . catkin_ws/devel/setup.sh
+                          catkin_make test -t catkin_ws
+                          """
                     }
                 }
             } catch(Exception e) {
