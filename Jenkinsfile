@@ -9,7 +9,7 @@ def buildLink = "<${env.BUILD_URL}|${env.JOB_NAME} ${env.BUILD_NUMBER}>"
 
 node {
     timestamps {
-//        ansiColor('xterm') {
+        ansiColor('xterm') {
             try {
                 properties properties: [
                         [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '50']],
@@ -38,7 +38,7 @@ node {
                           catkin_make install -C catkin_ws
                            """
 
-                        slackSend color: 'good', message: "stage 'gradle build' of build $buildLink passed"
+                        slackSend color: 'good', message: "stage 'build' of build $buildLink passed"
                     }
                 }
                 stage('test') {
@@ -47,12 +47,13 @@ node {
                           . catkin_ws/install/setup.sh
                           catkin_make test -C catkin_ws
                           """
+                       slackSend color:  '#0000FF', message: "stage 'test' of build $buildLink passed"
                     }
                 }
             } catch(Exception e) {
                 slackSend color: 'danger', message: "build $buildLink failed"
                 error "error building, ${e.getMessage()}"
             }
-//        }
+        }
     }
 }
