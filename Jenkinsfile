@@ -13,9 +13,8 @@ node {
             try {
                 properties properties: [
                         [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '50']],
-                        [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: "https://github.com/$githubOrg/$projectShortName"]
-                        //,
-                        //[$class: 'pipelineTriggers([pollSCM('H/2 * * * *')])]
+                        [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: "https://github.com/$githubOrg/$projectShortName"],
+                        pipelineTriggers([pollSCM('H/2 * * * *')])
                 ]
 
                 slackSend color: 'warning', message: "build $buildLink started"
