@@ -22,11 +22,14 @@ node {
                     withEnv(["PATH+WSTOOL=${tool 'wstool'}/bin"]) {
                         sh """
                            rm -fr catkin_ws
-                           mkdir catkin_ws
-                           wstool init catkin_ws/src
-                           """
-                        dir('catkin_ws/src/task_behavior_engine') {
-                            checkout scm
+                        """
+                        dir('catkin_ws/src'){
+                          sh """
+                              wstool init .
+                          """
+                          dir('task_behavior_engine'){
+                              checkout scm
+                          }
                         }
                     }
                 }
@@ -45,6 +48,7 @@ node {
                        sh """
                           . catkin_ws/install/setup.sh
                           catkin_make run_tests -C catkin_ws
+                          catkin_test_results
                           """
                        slackSend color:  '#0000FF', message: "stage 'test' of build $buildLink passed"
                     }
