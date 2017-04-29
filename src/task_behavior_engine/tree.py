@@ -333,6 +333,7 @@ class Node(object):
             self._cancel()
         if self._cleanup_cb:
             nodedata = self._blackboard.get_memory(self._id)
+            nodedata.set_data('last_result', self._result)
             self._cleanup_cb(nodedata)
         self._force_state = None
         self._result = NodeStatus(
