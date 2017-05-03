@@ -396,7 +396,7 @@ class Node(object):
             @returns [NodeData] The current NodeData
         """
         return self._blackboard.get_memory(self._id)
-    
+
     def get_result(self):
         """ Return the result of this behavior.
             @returns [NodeStatus] The current result status.
