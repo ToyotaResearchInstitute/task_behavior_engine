@@ -392,8 +392,14 @@ class Node(object):
         logger.debug(
             self._name + ".force() exiting.. " + str(self._force_state))
 
+    def get_nodedata(self):
+        """ Return the NodeData of this behavior
+            @returns [NodeData] The current NodeData
+        """
+        return self._blackboard.get_memory(self._id)
+    
     def get_result(self):
-        """ Return thre result of this behavior.
+        """ Return the result of this behavior.
             @returns [NodeStatus] The current result status.
         """
         return self._result
