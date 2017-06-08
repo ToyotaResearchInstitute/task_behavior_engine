@@ -104,9 +104,10 @@ class NodeStatus(object):
 
     PENDING = 0
     ACTIVE = 1
-    SUCCESS = 2
-    FAIL = 3
-    CANCEL = 4
+    IGNORE = 2
+    SUCCESS = 3
+    FAIL = 4
+    CANCEL = 5
 
     def __init__(self, status=PENDING, text=""):
         self.status = status
@@ -117,6 +118,7 @@ class NodeStatus(object):
         status_str = {
             self.PENDING: "PENDING",
             self.ACTIVE: "ACTIVE",
+            self.IGNORE: "IGNORE",
             self.SUCCESS: "SUCCESS",
             self.FAIL: "FAIL",
             self.CANCEL: "CANCEL"
@@ -137,12 +139,11 @@ class NodeStatus(object):
             the merged status is used.
             If the merged status is the same or equal, the text is concatenated.
         """
-        if status > self.status:
-            self.status = status
-            self.text = text
-
         if status == self.status:
             self.text = self.text + "; " + text
+        elif status > self.status:
+            self.status = status
+            self.text = text
 
 
 class Blackboard(object):
@@ -472,7 +473,7 @@ class Decorator(Node):
         """
         logger.debug(
             self._name + "._configure() entering... " + str(self._result))
-        if self._child:
+        if self._child is not None:
             self._child._configure()
         super(Decorator, self)._configure()
         logger.debug(
@@ -483,7 +484,7 @@ class Decorator(Node):
         """
         logger.debug(
             self._name + "._cleanup() entering... " + str(self._result))
-        if self._child:
+        if self._child is not None:
             self._child._cleanup()
         super(Decorator, self)._cleanup()
         logger.debug(self._name + "._cleanup() exiting.. " + str(self._result))
@@ -493,7 +494,7 @@ class Decorator(Node):
         """
         logger.debug(
             self._name + "._cancel() entering... " + str(self._result))
-        if self._child:
+        if self._child is not None:
             self._child._cancel()
         super(Decorator, self)._cancel()
         logger.debug(self._name + "._cancel() exiting.. " + str(self._result))
@@ -506,12 +507,13 @@ class Decorator(Node):
 
     def tick_child(self):
         """ Run the child node.
-            If no child defined, return default status (PENDING)
+            If no child defined, return ignore status
         """
-        if self._child:
+        if self._child is not None:
             return self._child.tick()
         else:
-            return NodeStatus()
+            return NodeStatus(NodeStatus.IGNORE,
+                              "Skipping {0}: No child defined.".format(self._name))
 
 
 class Behavior(Node):
@@ -563,18 +565,29 @@ class Behavior(Node):
         """Run a child node
         @param child [Node] The child to run
         """
-        logger.info(child._name + ".tick_child()")
-        result = child.tick()
-        if result == NodeStatus.ACTIVE:
-            if child._id not in self._open_nodes:
-                logger.info("Adding child " + child._name + " to open_nodes")
-                self._open_nodes.append(child._id)
-        if child.get_result() == NodeStatus.PENDING:
-            if child._id in self._open_nodes:
-                logger.info(
-                    "Removing child " + child._name + " from open_nodes")
-                self._open_nodes.remove(child._id)
-        return result
+        if child is not None:
+            logger.info(child._name + ".tick_child()")
+            result = child.tick()
+            if result == NodeStatus.ACTIVE:
+                if child._id not in self._open_nodes:
+                    logger.info("Adding child " +
+                                child._name + " to open_nodes")
+                    self._open_nodes.append(child._id)
+            if child.get_result() == NodeStatus.PENDING:
+                if child._id in self._open_nodes:
+                    logger.info(
+                        "Removing child " + child._name + " from open_nodes")
+                    self._open_nodes.remove(child._id)
+            return result
+        else:
+            return NodeStatus(NodeStatus.IGNORE,
+                              "Skipping.. No child defined.")
+
+    def _run(self):
+        if len(self._children) == 0:
+            return NodeStatus(NodeStatus.IGNORE,
+                              "Skipping {0}. No children defined".format(self._name))
+        super(Behavior, self)._run()
 
     def cancel_children(self):
         """ Cancel all children currently running

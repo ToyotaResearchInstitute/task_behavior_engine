@@ -635,6 +635,11 @@ class TestRandom(object):
         self.RANDOM.set_blackboard(self.blackboard)
         self.nd = self.blackboard.get_memory(self.RANDOM._id)
 
+    def test_empty(self):
+
+        result = self.RANDOM.tick()
+        assert_equal(result, NodeStatus.SUCCESS)
+
     def test_success(self):
         self.RANDOM.add_child(self.SUCCESS1)
         self.RANDOM.add_child(self.FAIL1)

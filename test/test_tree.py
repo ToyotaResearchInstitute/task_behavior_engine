@@ -84,33 +84,58 @@ class TestNodeStatus(object):
         assert_equal(s2.text, '')
 
     def test_str(self):
-        s0 = NodeStatus(NodeStatus.PENDING, 'not started')
-        assert_equal(str(s0), 'PENDING not started')
+        str_pending = NodeStatus(NodeStatus.PENDING, 'not started')
+        assert_equal(str(str_pending), 'PENDING not started')
 
-        s1 = NodeStatus(NodeStatus.ACTIVE, 'running')
-        assert_equal(str(s1), 'ACTIVE running')
+        str_active = NodeStatus(NodeStatus.ACTIVE, 'running')
+        assert_equal(str(str_active), 'ACTIVE running')
 
-        s2 = NodeStatus(NodeStatus.SUCCESS, 'finished')
-        assert_equal(str(s2), 'SUCCESS finished')
+        str_ignore = NodeStatus(NodeStatus.IGNORE, 'ignore result')
+        assert_equal(str(str_ignore), 'IGNORE ignore result')
 
-        s3 = NodeStatus(NodeStatus.FAIL, 'finished')
-        assert_equal(str(s3), 'FAIL finished')
+        str_success = NodeStatus(NodeStatus.SUCCESS, 'finished')
+        assert_equal(str(str_success), 'SUCCESS finished')
 
-        s4 = NodeStatus(NodeStatus.CANCEL, 'canceled')
-        assert_equal(str(s4), 'CANCEL canceled')
+        str_fail = NodeStatus(NodeStatus.FAIL, 'finished')
+        assert_equal(str(str_fail), 'FAIL finished')
 
-        s5 = NodeStatus(5, 'unknown')
-        assert_equal(str(s5), '5 unknown')
+        str_cancel = NodeStatus(NodeStatus.CANCEL, 'canceled')
+        assert_equal(str(str_cancel), 'CANCEL canceled')
+
+        str_unknown = NodeStatus(10, 'unknown')
+        assert_equal(str(str_unknown), '10 unknown')
 
     def test_eq(self):
         assert_equal(NodeStatus(NodeStatus.PENDING), NodeStatus.PENDING)
         assert_equal(NodeStatus(NodeStatus.ACTIVE), NodeStatus.ACTIVE)
+        assert_equal(NodeStatus(NodeStatus.IGNORE), NodeStatus.IGNORE)
         assert_equal(NodeStatus(NodeStatus.SUCCESS), NodeStatus.SUCCESS)
         assert_equal(NodeStatus(NodeStatus.FAIL), NodeStatus.FAIL)
         assert_equal(NodeStatus(NodeStatus.CANCEL), NodeStatus.CANCEL)
 
         assert_not_equal(NodeStatus(), NodeStatus(NodeStatus.ACTIVE))
         assert_not_equal(NodeStatus(NodeStatus.FAIL), NodeStatus.SUCCESS)
+
+    def test_merge(self):
+        # test initial value
+        status = NodeStatus(NodeStatus.PENDING, "not started")
+        assert_equal(status, NodeStatus.PENDING)
+        assert_equal(status.text, "not started")
+
+        # test merge higher value
+        status.merge(NodeStatus.FAIL, "Failed")
+        assert_equal(status, NodeStatus.FAIL)
+        assert_equal(status.text, "Failed")
+
+        # test merge lower value
+        status.merge(NodeStatus.ACTIVE, "Active")
+        assert_equal(status, NodeStatus.FAIL)
+        assert_equal(status.text, "Failed")
+
+        # test merge same value
+        status.merge(NodeStatus.FAIL, "Second fail")
+        assert_equal(status, NodeStatus.FAIL)
+        assert_equal(status.text, "Failed; Second fail")
 
 
 class TestBlackboard(object):
@@ -434,8 +459,24 @@ class TestDecorator(object):
             nd.cb_called = True
             return NodeStatus(NodeStatus.SUCCESS, 'complete')
         n = Node('test', run_cb=run_callback)
+
+        # test initialization with node
         d = Decorator('d_test', n)
         assert_equal(d._child, n)
+        result = d.tick_child()
+        assert_equal(result, NodeStatus.SUCCESS)
+
+        # test empty initialization
+        d = Decorator('d_test')
+        assert_equal(d._child, None)
+        result = d.tick_child()
+        assert_equal(result, NodeStatus.IGNORE)
+
+        # test set_child
+        d.set_child(n)
+        assert_equal(d._child, n)
+        result = d.tick_child()
+        assert_equal(result, NodeStatus.SUCCESS)
 
     def test_configure(self):
         n1 = Node('node1')
@@ -517,6 +558,8 @@ class TestBehavior(object):
     def test_init(self):
         b = Behavior('test')
         assert_equal(b._children, [])
+        result = b.tick()
+        assert_equal(result, NodeStatus.IGNORE)
 
     def test_children(self):
         b = Behavior('test')
