@@ -187,11 +187,18 @@ class Random(Behavior):
         self.child = None
 
     def configure(self, nodedata):
+        if len(self._children) == 0:
+            logger.info("No children set")
+            self.child = None
+            return
         logger.debug("Random.config() " + str(self._children))
         self.child = random.choice(self._children)
         logger.info("Selected random child: " + self.child._name)
 
     def run(self, nodedata):
+        if self.child is None:
+            logger.debug("Random.run() empty")
+            return NodeStatus(NodeStatus.SUCCESS, "No child selected")
         logger.debug("Random.run() " + str(self.child._name))
         self.reset_children_status()
         return self.tick_child(self.child)
@@ -274,12 +281,12 @@ class Majority(Behavior):
                 logger.debug("num_succeed: " + str(self.num_succeed))
 
                 logger.debug(
-                    "num_fail/num_children= " + str(self.num_fail/num_children))
-                if self.num_fail/num_children > 0.5:
+                    "num_fail/num_children= " + str(self.num_fail / num_children))
+                if self.num_fail / num_children > 0.5:
                     return NodeStatus(NodeStatus.FAIL, "The majority of children failed")
                 logger.debug(
-                    "num_succeed/num_children= " + str(self.num_succeed/num_children))
-                if self.num_succeed/num_children >= 0.5:
+                    "num_succeed/num_children= " + str(self.num_succeed / num_children))
+                if self.num_succeed / num_children >= 0.5:
                     return NodeStatus(NodeStatus.SUCCESS, "The majority of children succeeded")
 
         return NodeStatus(NodeStatus.ACTIVE, str("Executing " + self._name))
