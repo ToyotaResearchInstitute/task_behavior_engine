@@ -397,6 +397,13 @@ class Node(object):
         """
         return self._blackboard.get_memory(self._id)
 
+    def set_nodedata(self, key, value):
+        """ Set a NodeData value for this behavior
+        @param key [str] The name of the parameter
+        @param value The value of the parameter
+        """
+        self._blackboard.save(key, value, self._id)
+
     def get_result(self):
         """ Return the result of this behavior.
             @returns [NodeStatus] The current result status.
