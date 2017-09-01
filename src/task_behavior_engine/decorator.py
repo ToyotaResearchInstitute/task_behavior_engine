@@ -120,7 +120,7 @@ class UntilCount(Decorator):
         logger.debug("UntilCount.run() " + self._child._name)
         result = self.tick_child()
         if result == NodeStatus.FAIL:
-            nodedata.count = nodedata.count + 1
+            nodedata.count += 1
             if nodedata.count < nodedata.max_count:
                 return NodeStatus(NodeStatus.ACTIVE, "Trying again %s until %s..".format(nodedata.count, nodedata.max_count))
         return result
