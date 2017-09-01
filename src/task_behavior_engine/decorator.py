@@ -101,6 +101,31 @@ class Until(Decorator):
         return result
 
 
+class UntilCount(Decorator):
+    """ An UntilCount returns ACTIVE while the child returns FAIL up to count.
+        All other statuses are passed through.
+    """
+
+    def __init__(self, name, max_count, *args, **kwargs):
+        super(UntilCount, self).__init__(
+            name=name, configure_cb=self.config, run_cb=self.run, *args, **kwargs)
+
+        self._max_count = max_count
+
+    def config(self, nodedata):
+        nodedata.count = 0
+        nodedata.max_count = self._max_count
+
+    def run(self, nodedata):
+        logger.debug("UntilCount.run() " + self._child._name)
+        result = self.tick_child()
+        if result == NodeStatus.FAIL:
+            nodedata.count = nodedata.count + 1
+            if nodedata.count < nodedata.max_count:
+                return NodeStatus(NodeStatus.ACTIVE, "Trying again %s until %s..".format(nodedata.count, nodedata.max_count))
+        return result
+
+
 class Fail(Decorator):
 
     """ A Fail decorator returns FAIL if the child returns SUCCESS.
