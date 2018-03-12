@@ -85,22 +85,22 @@ class TestNodeStatus(object):
 
     def test_str(self):
         s0 = NodeStatus(NodeStatus.PENDING, 'not started')
-        assert_equal(str(s0), 'PENDING not started')
+        assert_equal(str(s0), 'PENDING')
 
         s1 = NodeStatus(NodeStatus.ACTIVE, 'running')
-        assert_equal(str(s1), 'ACTIVE running')
+        assert_equal(str(s1), 'ACTIVE')
 
         s2 = NodeStatus(NodeStatus.SUCCESS, 'finished')
-        assert_equal(str(s2), 'SUCCESS finished')
+        assert_equal(str(s2), 'SUCCESS')
 
         s3 = NodeStatus(NodeStatus.FAIL, 'finished')
-        assert_equal(str(s3), 'FAIL finished')
+        assert_equal(str(s3), 'FAIL')
 
         s4 = NodeStatus(NodeStatus.CANCEL, 'canceled')
-        assert_equal(str(s4), 'CANCEL canceled')
+        assert_equal(str(s4), 'CANCEL')
 
         s5 = NodeStatus(5, 'unknown')
-        assert_equal(str(s5), '5 unknown')
+        assert_equal(str(s5), '5')
 
     def test_eq(self):
         assert_equal(NodeStatus(NodeStatus.PENDING), NodeStatus.PENDING)

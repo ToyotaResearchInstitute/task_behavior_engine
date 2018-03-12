@@ -126,7 +126,7 @@ class NodeStatus(object):
         return str(self.status)
 
     def __str__(self):
-        return str(self._get_status_str() + " " + self.text)
+        return str(self._get_status_str())
 
     def __eq__(self, other):
         return self.status == other
