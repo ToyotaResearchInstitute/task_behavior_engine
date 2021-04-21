@@ -13,6 +13,7 @@
 # under the License.
 
 
+from __future__ import absolute_import
 from task_behavior_engine.tree import Node
 from task_behavior_engine.tree import NodeStatus
 

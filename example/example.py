@@ -14,6 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import time
 
 from task_behavior_engine.branch import Sequencer
@@ -21,6 +23,7 @@ from task_behavior_engine.decorator import Repeat
 from task_behavior_engine.tree import Blackboard
 from task_behavior_engine.tree import Node
 from task_behavior_engine.tree import NodeStatus
+from six.moves import range
 
 
 class Count(Node):

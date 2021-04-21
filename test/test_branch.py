@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from __future__ import absolute_import
 from nose.tools import assert_equal
 
 from task_behavior_engine.branch import All

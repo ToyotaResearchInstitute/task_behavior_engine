@@ -13,6 +13,7 @@
 # under the License.
 
 
+from __future__ import absolute_import
 import logging
 import threading
 import uuid
@@ -32,13 +33,13 @@ class NodeData(object):
         self._locks = {}
 
     def __contains__(self, key):
-        return key in self._data.keys()
+        return key in list(self._data.keys())
 
     def __getattr__(self, name):
         """ Override getattr to be thread safe. """
         if name[0] == '_':
             return object.__getattr__(self, name)
-        if not name in self._locks.keys():
+        if not name in list(self._locks.keys()):
             self._locks[name] = threading.Lock()
 
         with self._locks[name]:
@@ -51,7 +52,7 @@ class NodeData(object):
         if name[0] == '_':
             return object.__setattr__(self, name, value)
 
-        if not name in self._locks.keys():
+        if not name in list(self._locks.keys()):
             self._locks[name] = threading.Lock()
 
         self._locks[name].acquire()
@@ -79,7 +80,7 @@ class NodeData(object):
             @param default (None) The default value
             @throws KeyError if key not found and default not set
         """
-        if not key in self._data.keys():
+        if not key in list(self._data.keys()):
             self._data[key] = default
         return self._data[key]
 
