@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
     while result == NodeStatus.ACTIVE:
         result = count.tick()
-        print result
+        print(result)
         time.sleep(0.1)
 ```
 
@@ -172,7 +172,7 @@ if __name__ == '__main__':
 
     for i in range(0, 10):
         result = repeat.tick()
-        print result
+        print(result)
         time.sleep(0.1)
 ```
 
@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
     while result == NodeStatus.ACTIVE:
         result = finish_counts.tick()
-        print result
+        print(result)
         time.sleep(0.1)
 ```
 Here is also an example of how to use the blackboard to set node parameters.
