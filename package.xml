@@ -12,8 +12,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <long_description>read('README.md')</long_description>
-
   <export>
     <architecture_independent/>
   </export>
