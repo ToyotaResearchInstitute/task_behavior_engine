@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from __future__ import absolute_import
 from nose.tools import assert_equal
 from nose.tools import assert_not_equal
 from nose.tools import assert_raises
@@ -46,10 +47,10 @@ class TestNodeData(object):
     def test_keys(self):
         nd = NodeData()
         nd.key1 = "first key"
-        assert_equal(nd.keys(), ['key1'])
+        assert_equal(list(nd.keys()), ['key1'])
         nd.key2 = "second key"
-        assert_equal(True, 'key2' in nd.keys())
-        assert_equal(True, 'key1' in nd.keys())
+        assert_equal(True, 'key2' in list(nd.keys()))
+        assert_equal(True, 'key1' in list(nd.keys()))
 
     def test_get_data(self):
         nd = NodeData()
@@ -138,7 +139,7 @@ class TestBlackboard(object):
         assert_equal(b._get_node_memory("uuid"), {})
         # test unknown uuid memory
         memory = b._get_node_memory("test_uuid")
-        assert_equal(memory.keys(), ['node_data', 'remapping'])
+        assert_equal(list(memory.keys()), ['node_data', 'remapping'])
         # test _get_node_memory
         memory['test_memory'] = 'test'
         memory = b._get_node_memory("test_uuid")
@@ -149,7 +150,7 @@ class TestBlackboard(object):
         # test manually set memory
         node_memory = {'node_data': {'test_memory': 'test'}, 'remapping': {}}
         node_data = b._get_node_data(node_memory)
-        assert_equal(node_data.keys(), ['test_memory'])
+        assert_equal(list(node_data.keys()), ['test_memory'])
         # test non-existing memory
         assert_raises(KeyError, b.get, 'test', 'node_scope')
         # test save
